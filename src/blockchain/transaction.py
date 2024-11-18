@@ -3,11 +3,12 @@ from ecdsa import SigningKey, VerifyingKey, BadSignatureError
 
 
 class Transaction:
-    def __init__(self, sender: str, receiver: str, amount: float) -> None:
-        self.sender: str = sender
+    def __init__(self, sender_public_key: str, receiver: str, amount: float) -> None:
+        self.sender_public_key = sender_public_key
+        self.sender = sender_public_key.to_string().hex()
         self.receiver: str = receiver
         self.amount: float = amount
-        self.message: str = f"{sender}{receiver}{amount}"
+        self.message: str = f"{self.sender}{receiver}{amount}"
         h = hashlib.sha256()
         h.update(self.message.encode("utf-8"))
         self.hash: str = h.hexdigest()
@@ -17,7 +18,8 @@ class Transaction:
         signature = private_key.sign(self.hash.encode("utf-8"))
         self.signature = signature
 
-    def verify(self, public_key: VerifyingKey) -> bool:
+    def verify(self) -> bool:
+        public_key = self.sender_public_key
         try:
             unforgeable = public_key.verify(
                 self.signature,

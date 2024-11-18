@@ -1,6 +1,6 @@
 import hashlib
 from datetime import datetime
-from blockchain.transaction import Transaction
+from src.blockchain.transaction import Transaction
 from pymerkle import InmemoryTree as MerkleTree
 
 
@@ -9,7 +9,7 @@ class BlockHeader:
         self.version: int = 0
         self.hashPrevBlock: str = hashPrevBlock
         self.hashMerkleRoot: str = hashMerkleRoot
-        self.time: datetime = datetime(2000, 1, 1)
+        self.time: datetime = datetime.now()
         self.bits: int = 20
         self.nonce: int = 0
 
@@ -49,6 +49,7 @@ class Block:
             h.update(str(self).encode("utf-8"))
             value = h.hexdigest()
         self.hashBlock = value
+        print(f"The block as been successfully mined with nonce {self.header.nonce}")
 
     # def __str__(self):
     #     return f"{self.previous_hash}{self.data}{self.nonce}"
